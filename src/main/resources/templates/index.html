@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<meta charset="utf-8" />
+		<title>Attendance Record</title>
+
+		<meta name="description" content="" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+
+		<!-- bootstrap & fontawesome -->
+		<link rel="stylesheet" href="assets/css/bootstrap.min.css" />
+		<link rel="stylesheet" href="assets/css/font-awesome.min.css" />
+
+		<!-- page specific plugin styles -->
+		<link rel="stylesheet" href="assets/css/jquery-ui.custom.min.css" />
+		<link rel="stylesheet" href="assets/css/chosen.css" />
+		<link rel="stylesheet" href="assets/css/datepicker.css" />
+		<link rel="stylesheet" href="assets/css/bootstrap-timepicker.css" />
+		
+		<!-- text fonts -->
+		<link rel="stylesheet" href="assets/css/ace-fonts.css" />
+
+		<!-- ace styles -->
+		<link rel="stylesheet" href="assets/css/ace.min.css" id="main-ace-style" />
+
+		<!--[if lte IE 9]>
+			<link rel="stylesheet" href="assets/css/ace-part2.min.css" />
+		<![endif]-->
+		<link rel="stylesheet" href="assets/css/ace-skins.min.css" />
+		<link rel="stylesheet" href="assets/css/ace-rtl.min.css" />
+
+		<!--[if lte IE 9]>
+		  <link rel="stylesheet" href="assets/css/ace-ie.min.css" />
+		<![endif]-->
+
+		<!-- inline styles related to this page -->
+
+		<!-- ace settings handler -->
+		<script src="assets/js/ace-extra.min.js"></script>
+
+		<!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
+
+		<!--[if lte IE 8]>
+		<script src="assets/js/html5shiv.min.js"></script>
+		<script src="assets/js/respond.min.js"></script>
+		<![endif]-->
+		
+	</head>
+
+	<body class="no-skin">
+		
+		<div id="navbar" class="navbar navbar-default    navbar-collapse">
+			<div class="navbar-container" id="navbar-container">
+				<div class="navbar-header pull-left">
+					<!-- #section:basics/navbar.layout.brand -->
+					<a href="#" class="navbar-brand">
+						<small>
+							Attendance Record
+						</small>
+					</a>
+
+					<!-- /section:basics/navbar.layout.brand -->
+
+					<!-- #section:basics/navbar.toggle -->
+					<button class="pull-right navbar-toggle navbar-toggle-img collapsed" type="button" data-toggle="collapse" data-target=".navbar-buttons">
+						<span class="sr-only">Toggle user menu</span>
+
+						
+					</button>
+
+					<button class="pull-right navbar-toggle collapsed" type="button" data-toggle="collapse" data-target=".sidebar">
+						<span class="sr-only">Toggle sidebar</span>
+
+						<span class="icon-bar"></span>
+
+						<span class="icon-bar"></span>
+
+						<span class="icon-bar"></span>
+					</button>
+
+					<!-- /section:basics/navbar.toggle -->
+				</div>
+			</div><!-- /.navbar-container -->
+		</div>
+
+	
+		<div class="main-container" id="main-container">
+			<!-- #section:basics/sidebar -->
+			<div id="sidebar" class="sidebar navbar-collapse collapse">
+				<ul class="nav nav-list">
+					<li class="">
+						<a href="index.html">
+							<i class="menu-icon fa fa-tachometer"></i>
+							<span class="menu-text"> Home </span>
+						</a>
+					</li>
+
+					<li class="">
+						<a href="listRecord.html" >
+							<i class="menu-icon fa fa-desktop"></i>
+							<span class="menu-text"> Record </span>
+						</a>
+					</li>
+					<li class="">
+						<a href="javascript:logout();" >
+							<i class="menu-icon fa fa-sign-out"></i>
+							<span class="menu-text"> Log out </span>
+						</a>						
+					</li>
+				</ul><!-- /.nav-list -->
+			</div>
+
+			<!-- /section:basics/sidebar -->
+			<div class="main-content ">
+				<div class="space-4"></div>
+				<div class="col-xs-12">
+					<div class="widget-main padding-6" th:each="msg : ${msgs}">
+						<div class="alert alert-danger">
+							<p th:text="${msg}"></p> 
+						</div>
+					</div>
+					<!-- PAGE CONTENT BEGINS -->
+					<form class="form-horizontal" role="form" method="post" action="addRecord.html" id="mainForm">
+						<!-- #section:elements.form -->
+						<div class="form-group">
+							<label class="col-sm-3 col-xs-3 col-md-3  control-label no-padding-right"> <b>Dept.:</b> </label>
+							<div class="col-sm-9 col-xs-9 col-md-9">
+								<label class="control-label no-padding-right" > <b th:text="@{${user.depID} +' '+${user.depName}}">xxxx</b></label>
+							</div>
+						</div>
+	
+						<div class="form-group">
+							<label class="col-sm-3 col-xs-3 control-label no-padding-right"> <b>Emp.:</b> </label>
+	
+							<div class="col-sm-9 col-xs-9">
+								<label class="control-label no-padding-right" > <b th:text="@{${user.ename} +' '+${user.cname}}">OOOOO XXXXX</b></label>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="col-sm-3 col-xs-3 control-label no-padding-right"> <b>Date:</b> </label>
+	
+							<div class="col-sm-9 col-xs-9">
+								<div class="input-group">
+									<input class="form-control date-picker" id="calDate" name="calDate" type="text" data-date-format="yyyy-mm-dd" th:value="${calDate}" readonly/>
+									<span class="input-group-addon">
+										<i class="fa fa-calendar bigger-110"></i>
+									</span>
+								</div>
+							</div>
+						</div>
+						<div class="space-4"></div>
+						<div class="form-group">
+							<label class="col-sm-3 col-xs-3 control-label no-padding-right"> <b>Records:</b> </label>
+							
+							
+							<div class="col-sm-9 col-xs-9">
+								<div class="col-sm-6 col-xs-6 col-md-6">
+									<div class="alert alert-info" style="padding: 10px;" id="divRecordF">First:<br/><b>reading</b></div>
+								</div>
+								
+								<div class="col-sm-6 col-xs-6 col-md-6">
+									<div class="alert alert-info" style="padding: 10px;" id="divRecordS"> Last:<br/><b>reading</b></div>
+								</div>
+							</div>
+						</div>
+			
+						<div class="form-group">					
+							<div class="col-sm-4 col-xs-4 col-md-4 text-center">
+								<a href="#" class="btn btn-app btn-warning" style="width:90px;" id="btnPunchIn">
+									<i class="ace-icon fa fa-bell-o bigger-230"></i>
+									In
+								</a>
+							
+							</div>
+							<div class="col-sm-4 col-xs-4 col-md-4 text-center">
+								<a href="#" class="btn btn-app btn-success" style="width:90px;" id="btnPunchOut">
+									<i class="ace-icon fa fa-bell bigger-230"></i>
+									Out
+								</a>
+							</div>
+							<div class="col-sm-4 col-xs-4 col-md-4 text-center">
+								<a href="#" class="btn btn-app btn-info" style="width:90px;" id="btnPunchOut">
+									<i class="ace-icon fa fa-edit bigger-230"></i>
+									無刷卡
+								</a>
+							</div>
+						</div>
+						<div class="space-4"></div>
+						
+						<div class="widget-main padding-6" id="divPunchIn" style="display: none;">
+							<h5><strong>Punch In:</strong></h5>
+							<div class="alert alert-warning">
+								<div class="btn-group">
+									<button type="button" class="btn btn-white btn-sm btn-primary" style="margin-right: 8px;margin-top: 5px;" onclick="javascript:setPunchTime('8:30');">08:30</button>
+									<button type="button" class="btn btn-white btn-sm btn-primary" style="margin-right: 8px;margin-top: 5px;" onclick="javascript:setPunchTime('9:00');">09:00</button>
+									<button type="button" class="btn btn-white btn-sm btn-primary" style="margin-right: 8px;margin-top: 5px;" onclick="javascript:setPunchTime('9:30');">09:30</button>
+									<button type="button" class="btn btn-white btn-sm btn-primary" style="margin-right: 8px;margin-top: 5px;" onclick="javascript:setPunchTime('10:00');">10:00</button>
+									<button type="button" class="btn btn-white btn-sm btn-primary" style="margin-right: 8px;margin-top: 5px;" onclick="javascript:setPunchTime('10:30');">10:30</button>
+								</div>
+							</div>
+						</div>
+						<div class="widget-main padding-6" id="divPunchOut" style="display: none;">
+							<h5><strong>Punch Out:</strong></h5>
+							<div class="alert alert-success">
+								<div class="btn-group">
+									<button type="button" class="btn btn-white btn-sm btn-primary" style="margin-right: 8px;margin-top: 5px;" onclick="javascript:setPunchTime('17:30');">17:30</button>
+									<button type="button" class="btn btn-white btn-sm btn-primary" style="margin-right: 8px;margin-top: 5px;" onclick="javascript:setPunchTime('18:00');">18:00</button>
+									<button type="button" class="btn btn-white btn-sm btn-primary" style="margin-right: 8px;margin-top: 5px;" onclick="javascript:setPunchTime('18:30');">18:30</button>
+									<button type="button" class="btn btn-white btn-sm btn-primary" style="margin-right: 8px;margin-top: 5px;" onclick="javascript:setPunchTime('19:00');">19:00</button>
+									<button type="button" class="btn btn-white btn-sm btn-primary" style="margin-right: 8px;margin-top: 5px;" onclick="javascript:setPunchTime('19:30');">19:30</button>
+								</div>
+							</div>
+						</div>
+						
+						
+						<div class="form-group" id="divDetailTime" style="display: none;">
+							<label class="col-sm-3 col-xs-3 control-label no-padding-right"> <b id="labCusAct">Time:</b> </label>
+	
+							<div class="col-sm-6 col-xs-6">
+								<div class="input-group bootstrap-timepicker">
+									<input id="txtPunchTime" name="txtPunchTime" type="text" class="form-control" />
+									<span class="input-group-addon">
+										<i class="fa fa-clock-o bigger-110"></i>
+									</span>
+								</div>
+							</div>
+							
+							<div class="col-sm-3 col-xs-3" >
+								<button class="btn btn-sm btn-primary btnMySubmit" >Submit</button>
+							</div>
+						</div>
+						<div class="space-4"></div>
+						<div class="widget-main padding-6" id="divNoPunchReason">
+							<h5><strong>當天無刷卡原因:</strong></h5>
+							<div class="alert alert-info " >
+								<div class="btn-group">
+									<button type="button" class="btn btn-white btn-primary btn-lg" style="margin-right: 8px;" onclick="javascript:setNoPunchReason('take_off');">請假</button>
+									<button type="button" class="btn btn-white btn-primary btn-lg" style="margin-right: 8px;" onclick="javascript:setNoPunchReason('travel');">出差</button>
+									<button type="button" class="btn btn-white btn-primary btn-lg" style="margin-right: 8px;" onclick="javascript:setNoPunchReason('training');">訓練</button>
+								</div>
+								
+								<div class="space-4"></div>
+								<span id="divOtherReason" >
+									<label class="control-label no-padding-right" for="txtOtherReason">其他:</label>
+									<input type="text" id="txtOtherReason" name="txtOtherReason" placeholder="Others" />
+								</span>
+								<button class="btn btn-sm btn-primary" onclick="javascript:setNoPunchReason('others');">Submit</button>	
+							</div>
+							
+						</div>
+						
+						
+						<input type="hidden" id="hidTxtActName" name="hidTxtActName">
+						<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+					</form>
+				</div>
+			</div><!-- /.main-content -->
+
+			
+				
+			<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+				<i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+			</a>
+		</div><!-- /.main-container -->
+
+		<!-- basic scripts -->
+		<div class="modal"><!-- Place at bottom of page --></div>
+		<!--[if !IE]> -->
+		<script type="text/javascript">
+			window.jQuery || document.write("<script src='assets/js/jquery.min.js'>"+"<"+"/script>");
+		</script>
+
+		<!-- <![endif]-->
+
+		<!--[if IE]>
+		<script type="text/javascript">
+		 window.jQuery || document.write("<script src='assets/js/jquery1x.min.js'>"+"<"+"/script>");
+		</script>
+		<![endif]-->
+		<script type="text/javascript">
+			if('ontouchstart' in document.documentElement) document.write("<script src='assets/js/jquery.mobile.custom.min.js'>"+"<"+"/script>");
+		</script>
+		<script src="assets/js/bootstrap.min.js"></script>
+
+		<!-- page specific plugin scripts -->
+		<script src="assets/js/jquery-ui.custom.min.js"></script>
+		<script src="assets/js/jquery.ui.touch-punch.min.js"></script>
+		<script src="assets/js/date-time/bootstrap-datepicker.min.js"></script>
+		<script src="assets/js/date-time/bootstrap-timepicker.min.js"></script>
+		<script src="assets/js/date-time/moment.min.js"></script>
+		
+        
+		<!-- ace scripts -->
+		<script src="assets/js/ace-elements.min.js"></script>
+		<script src="assets/js/ace.min.js"></script>
+
+		<!-- inline scripts related to this page -->
+        <script type="text/javascript">
+        
+        ace.vars['base'] = '..'; 
+        var paraName = '[[${_csrf.parameterName}]]';
+		var t = '[[${_csrf.token}]]';
+		var empNo = '[[${user.empNo}]]';
+		var punchTime = null;
+        var date = new Date();
+        var today = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        
+        
+		jQuery(function($) {
+			$('#calDate').datepicker({
+				autoclose: true,
+				todayHighlight: true,
+				todayBtn:true
+			}).on('changeDate', function (ev) {
+				window.location.href = "index.html?calDate="+$("#calDate").val();
+			});
+			
+			punchTime = $('#txtPunchTime').timepicker({
+				minuteStep: 1,
+				hourStep:1,
+				showSeconds: false,
+				showMeridian: false
+			}).next().on(ace.click_event, function(){
+				$(this).prev().focus();
+			});
+			
+			
+		
+			
+			$("#btnPunchIn").click(function(e){
+				if($("#divPunchIn").is(':visible')){
+					$("#divPunchIn").hide();
+					$("#divPunchOut").hide();
+					$("#divDetailTime").hide();
+					$('#txtPunchTime').timepicker('setTime','');
+				}else{
+					$("#divPunchIn").show();
+					$("#divPunchOut").hide();
+					$("#hidTxtActName").val("punch_in");
+					$("#divDetailTime").show();
+					$("#labCusAct").text("Punch In:");
+					$('#txtPunchTime').timepicker('setTime', new Date());
+				}
+				isShowNoPunchDiv();
+			});
+			$("#btnPunchOut").click(function(e){
+				if($("#divPunchOut").is(':visible')){
+					$("#divPunchIn").hide();
+					$("#divPunchOut").hide();
+					$("#divDetailTime").hide();
+					$('#txtPunchTime').timepicker('setTime','');
+				}else{
+					$("#divPunchIn").hide();
+					$("#divPunchOut").show();
+					$("#hidTxtActName").val("punch_out");
+					$("#divDetailTime").show();
+					$("#labCusAct").text("Punch Out:");
+					$('#txtPunchTime').timepicker('setTime', new Date());
+				}
+				isShowNoPunchDiv();
+			});
+			$(".btnMySubmit").click(function(e){
+				
+			});
+			getRecords(empNo);
+			
+		});
+		
+		function logout(){
+    		$.ajax({
+   			  type: 'POST',
+   			  url: 'perform_logout',
+   			  data: {_csrf:t},
+   			  success: function(res){
+   				window.location.href = "login_page.html";
+   			  }
+   			});
+    	}
+		
+		function setPunchTime(myTime){
+			$('#txtPunchTime').timepicker('setTime', myTime);
+			$("#mainForm").submit();
+		}
+		
+		function setNoPunchReason(reason){
+			$("#hidTxtActName").val(reason);
+			if("others" == reason){
+				if(""==$("#txtOtherReason").val()){
+					alert("請填寫當天無刷卡原因描述!");
+					this.event.preventDefault();
+				}else{
+					$("#mainForm").submit();
+				}
+			}else{
+				$("#mainForm").submit();
+			}
+			
+		}
+		function doSubmit(){
+			$.ajax({
+   			  type: 'POST',
+   			  url: 'perform_logout',
+   			  data: {_csrf:t},
+   			  success: function(res){
+   				window.location.href = "login_page.html";
+   			  }
+   			});
+		}
+		
+		function isShowNoPunchDiv(){
+			if(!$("#divPunchOut").is(':visible') && !$("#divPunchIn").is(':visible')){
+				$("#divNoPunchReason").show();
+			}else{
+				$("#divNoPunchReason").hide();
+			}
+		}
+		
+		function getRecords(){
+			$.ajax({
+			  async:false,
+   			  type: 'GET',
+   			  url: 'api/v2/doorLogs/get/'+$("#calDate").val(),
+   			  data: {_csrf:t},
+   			  success: function(data,status){
+   			    $("#divRecordF").html("First:<br/><b>"+data.FIRST+"</b>");
+   			    $("#divRecordS").html("Last:<br/><b>"+data.SECOND+"</b>");
+   			  },
+   			  error:function(res){
+   				$("#divRecordF").html("First:<br/><b>N/A</b>");
+   			    $("#divRecordS").html("Last:<br/><b>N/A</b>");
+   			  }
+   			});
+		}
+        </script>
+
+
+	</body>
+</html>

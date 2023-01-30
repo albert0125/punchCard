@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<meta charset="utf-8" />
+		<title>Attendance Record</title>
+
+		<meta name="description" content="" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+
+		<!-- bootstrap & fontawesome -->
+		<link rel="stylesheet" th:href="@{assets/css/bootstrap.min.css}" />
+
+
+		<!-- page specific plugin styles -->
+		<link rel="stylesheet" th:href="@{assets/css/datepicker.css}" />
+
+		<!-- ace styles -->
+		<link rel="stylesheet" th:href="@{assets/css/ace.min.css}" id="main-ace-style" />
+
+		<!--[if lte IE 9]>
+			<link rel="stylesheet" th:href="@{assets/css/ace-part2.min.css}" />
+		<![endif]-->
+
+
+		<!--[if lte IE 9]>
+		  <link rel="stylesheet" th:href="@{assets/css/ace-ie.min.css}" />
+		<![endif]-->
+
+		<!-- inline styles related to this page -->
+
+		<!-- ace settings handler -->
+		<script th:src="@{assets/js/ace-extra.min.js}"></script>
+
+		<!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
+
+		<!--[if lte IE 8]>
+		<script th:src="@{assets/js/html5shiv.min.js}"></script>
+		<script th:src="@{assets/js/respond.min.js}"></script>
+		<![endif]-->
+		
+	</head>
+
+	<body class="no-skin" >
+		<div class="main-container" id="main-container">
+			<div class="main-content ">
+				<div class="space-4"></div>
+				<div class="row" style="margin-left: 5px;margin-right: 5px;">
+				  <div class="col-md-4 col-xs-4" style="padding-right: 2px;padding-left: 5px;">
+				  	<button type="button" class="btn btn-block btn-primary " style="font-size:16px;"  onclick="javascript=window.location.href ='index.html';">上下班打卡</button>
+				  </div>
+				  <div class="col-md-4 col-xs-4" style="padding-right: 2px;padding-left: 2px;">
+				  	<button type="button" class="btn btn-block btn-primary" style="font-size:16px;" onclick="javascript=window.location.href ='punchRecords.html';">手機打卡紀錄</button>
+				  </div>
+				  <div class="col-md-4 col-xs-4" style="padding-right: 2px;padding-left: 2px;">
+				  	<button type="button" class="btn btn-block btn-primary disabled" style="font-size:16px;">無出勤原因</button>
+				  </div>
+				  
+				</div>
+				<div class="space-4"></div>
+				
+					
+				<div class="row" style="background-color:#F0F0F0; ">
+					<div class="col-xs-10 text-center" style="margin-top:15px;" >
+						<b th:text="@{'Hello,&nbsp;&nbsp;' + ${user.cname}+' ' +${user.ename}}" >OOOOO XXXXX</b>
+					</div>
+					<div class="col-xs-2 text-right" >
+						<img th:src="@{/images/icon_exit.png}"  onclick="javascript:logout();">
+					</div>
+				</div>
+				
+				
+				<div class="space-4"></div>
+
+				<!-- 
+				<div class="alert alert-danger widget-main padding-6" id="divMsgBox">			
+					<ul th:each="msg : ${msgs}">
+						<li th:text="${msg}"></li>
+					</ul>
+				</div>
+				 -->
+				<div class="row">
+					<div class="col-xs-12">
+						<!-- PAGE CONTENT BEGINS -->
+						<form role="form" method="post" action="addOthersReason.html" id="mainForm">
+							<!-- #section:elements.form -->
+							<div class="row text-center" style="background-color:#F0F0F0; ">
+								<div class="col-sm-3 col-xs-3" style="margin-top: 10px;" onclick="javascript:preDate();">
+									<b>&lt;&lt;</b>
+								</div>
+								<div class="col-sm-6 col-xs-6 ">
+									<input class="form-control date-picker" id="calDate" name="calDate" type="hidden" data-date-format="yyyy-mm-dd" th:value="${calDate}" style="text-align: center;border: 0px; border: 0px; font-size: large; font-weight:blod; color: blue;" readonly/>
+									<div th:text="${calDate}+'&nbsp;'+${eWeekDay}+'&nbsp;'+${cWeekDay}" style="font-size:12px;color:blue;margin-top: 10px;font-weight:bold;"></div>
+								</div>
+								<div class="col-sm-3 col-xs-3" style="margin-top: 10px;" onclick="javascript:nextDate();">
+									<b>&gt;&gt;</b>
+								</div>
+							</div>
+							
+							<div class="space-4"></div>
+							
+							<div class="row" style="background-color:#F0F0F0; padding: 5px;" >
+								
+															
+								<div class="col-sm-12 col-xs-12" style="padding-left: 20px;background-color:#F0F0F0; ">
+									<span>
+										<div th:if="${isToday}" style="font-size:12px;color:blue;"><p th:text="''+${calDate}+'&nbsp;is Today'+'('+${calDate}+'&nbsp;是今天)'">&nbsp;</p></div>
+										<div th:unless="${isToday}" style="font-size:12px;color:blue;"><p th:text="''+${calDate}+'&nbsp;is&nbsp;'+${eWeekDay}+'&nbsp;('+${calDate}+'是'+${cWeekDay}+')'">&nbsp;</p></div>
+									</span>
+									<span style="padding: 5px;">當日全天未打卡/刷卡原因: (Remark for unable to punch in/out)</span>	
+									<div class="btn-group">
+										<button type="button" class="btn btn-white btn-sm btn-primary" style="margin-right: 5px;margin-top: 20px;" onclick="javascript:setReason('take_off');">請假<br/>Leave</button>
+										<button type="button" class="btn btn-white btn-sm btn-primary" style="margin-right: 5px;margin-top: 20px;" onclick="javascript:setReason('travel');">出差<br/>Biz Trip</button>
+										<button type="button" class="btn btn-white btn-sm btn-primary" style="margin-right: 5px;margin-top: 20px;" onclick="javascript:setReason('training');">訓練<br/>Training</button>
+										
+										<input id="txtOtherDesc" name="txtOtherDesc" type="text" class="form-control" style="margin-top: 15px;text-align: center;width:120px;height:55px;" placeholder="其他 Others"/>
+									</div>
+								</div>
+							</div>
+							
+							
+							
+							<div class="space-4"></div>
+							
+							<div class="row">
+								<div class="col-sm-12 col-xs-12">
+								&nbsp;說明:
+								</div>
+							</div>
+							<div class="row" style="border: solid;border-radius: 10px;margin-left: 2px; margin-right: 2px;padding-top:10px;border-width: 1px;">
+								<div class="col-sm-12 col-xs-12" style="font-size: 12px;">
+									<p>需要填寫「無出勤原因」的狀況如下:</p>
+									<p>1、還沒有進e-HR、workflow或訓練系統申請「請假」、「出差」、「訓練」。(當日已於系統請假，則不需填寫"無出勤原因")</p>
+									<p>2、一整天無進公司刷門禁卡及無手機打卡登錄時間。</p>
+									<p>3、請於此功能點選無打卡/刷卡原因。</p>
+									<p><span style="font-size: 12px; color: red;">提醒:填寫"無出勤原因"，不代表正式申請，請您記得上系統填寫正式申請單喔!</span></p>
+								</div>
+							</div>
+							
+							<div class="row text-center" style="background-color:#F0F0F0; padding: 10px;">
+								<div class="col-sm-12 col-xs-12" >
+									<button class="btn btn-block btn-primary btnMySubmit" style="border-radius: 10px;">Submit</button>
+								</div>
+							</div>
+							
+							<input type="hidden" id="hidTxtActName" name="hidTxtActName">
+							
+						</form>
+					</div>
+				</div>
+			</div><!-- /.main-content -->
+
+			
+				
+			<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+				<i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+			</a>
+		</div><!-- /.main-container -->
+
+		<!-- basic scripts -->
+		<div class="modal"><!-- Place at bottom of page --></div>
+		<!--[if !IE]> -->
+		<script type="text/javascript">
+			window.jQuery || document.write("<script src='assets/js/jquery.min.js'>"+"<"+"/script>");
+		</script>
+
+		<!-- <![endif]-->
+
+		<!--[if IE]>
+		<script type="text/javascript">
+		 window.jQuery || document.write("<script src='assets/js/jquery1x.min.js'>"+"<"+"/script>");
+		</script>
+		<![endif]-->
+		<script th:src="@{assets/js/bootstrap.min.js}"></script>
+
+		<!-- page specific plugin scripts -->
+		<script th:src="@{assets/js/jquery-ui.custom.min.js}"></script>
+		<script th:src="@{assets/js/jquery.ui.touch-punch.min.js}"></script>
+		<script th:src="@{assets/js/date-time/bootstrap-datepicker.min.js}"></script>
+		<script th:src="@{assets/js/date-time/moment.min.js}"></script>
+		<script th:src="@{assets/js/bootbox.min.js}"></script>
+        
+		<!-- ace scripts -->
+		<script th:src="@{assets/js/ace-elements.min.js}"></script>
+		<script th:src="@{assets/js/ace.min.js}"></script>
+
+		<!-- inline scripts related to this page -->
+		
+		
+        <script type="text/javascript">
+
+        ace.vars['base'] = '..'; 
+        var loginType = '[[${loginType}]]';
+		var empNo = '[[${user.empNo}]]';
+		var _datetime_format = "YYYY-MM-DD HH:mm";
+		var _date_format = "YYYY-MM-DD";
+		
+		jQuery(function($) {
+			$("#hidTxtActName").val("");
+			
+			$('#calDate').datepicker({
+				autoclose: true,
+				todayHighlight: true,
+				todayBtn:true
+			}).on('changeDate', function (ev) {
+				window.location.href = "otherReason.html?calDate="+$("#calDate").val();
+			});
+			
+			
+			$(".btnMySubmit").click(function(e){
+				e.preventDefault();
+				
+				var retMsg = chkSubmit();
+				if("" == retMsg){
+					$("#mainForm").submit();
+				}else{
+					bootbox.alert({
+					    message: retMsg,
+					    size: 'small'
+					});
+				}
+			});			
+		});
+		function setReason(reason){
+			$("#hidTxtActName").val(reason);
+		}
+		
+		
+		function logout(){
+			if(null== loginType || "FORMBASE"==loginType){
+				target = 'perform_logout.html';
+			}else{
+				target = 'index.html';
+			}
+    		$.ajax({
+   			  type: 'POST',
+   			  url: target,
+   			  data: {},
+   			  success: function(res){
+   				window.location.href = "login_page.html";
+   			  }
+   			});
+    	}
+		
+		function setPunchInTime(myTime){
+			$('#txtPunchInTime').timepicker('setTime', myTime);
+		}
+		function setPunchOutTime(myTime){
+			$('#txtPunchOutTime').timepicker('setTime', myTime);
+		}
+
+		
+		function chkSubmit(){
+			var dateTimeStr = null;
+			var dateStr = $("#calDate").val();
+			var preDay = null;
+			var msg = "";
+			var hidTxtActName= $("#hidTxtActName").val();
+			var txtOtherDesc = $("#txtOtherDesc").val();
+			if("" == hidTxtActName && "" == txtOtherDesc){
+				msg += "<p>請先選擇一項原因，或填寫其他欄位。</p>";
+			}else{
+				console.log("punch date time :"+ moment(dateTimeStr).format(_datetime_format));
+				console.log("now date time :"+ moment().format(_datetime_format));
+				//console.log(dateTimeStr+","+moment(dateTimeStr,'YYYY-MM-DD HH:mm').valueOf());
+				//console.log(moment(dateStr).add(-1).format(_date_format));
+				//console.log(moment(dateStr).weekday(-2).format(_date_format));//上一個禮拜五
+				
+				if(moment().day()==1){
+					preDay = moment().weekday(-2);
+				}else{
+					preDay = moment().add(-1,'days');
+				}
+				
+				if(moment(dateStr).isBefore(preDay,'day')){
+					msg += "<p>只能打昨天與今日的卡鐘時間!</p>";
+				}
+				if(moment(dateStr).isAfter(moment())){
+					msg += "<p>不可以登記未來的時間!</p>";
+				}
+			}
+			
+			return msg;
+		}
+		function nextDate(){
+			this.event.preventDefault();
+			var dateStr = $("#calDate").val();
+			var targetDate = moment(dateStr).add(1,'days');
+			window.location.href = "otherReason.html?calDate="+targetDate.format(_date_format);
+		}
+		function preDate(){
+			this.event.preventDefault();
+			var dateStr = $("#calDate").val();
+			var targetDate = moment(dateStr).add(-1,'days');
+			window.location.href = "otherReason.html?calDate="+targetDate.format(_date_format);
+		}
+        </script>
+		<script th:inline="javascript">
+		var msgs =  [[${msgs}]];
+		var errorMsgs ="";
+		if(null!=msgs){
+			for(var i=0;i<msgs.length;i++){
+				errorMsgs += msgs[i];
+			}
+			bootbox.alert({
+			    message: errorMsgs,
+			    size: 'small'
+			});
+		}
+		
+		</script>
+
+	</body>
+</html>
